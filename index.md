@@ -1,9 +1,1 @@
-# Heading 1
-## Heading 2
-### Heading 3
-This is [a link](/docs/AnotherMD.md)
-    
-    Chan qua bro
-
-- [ ] Hello
-- [ ] Bye
+Blog is under development. The first blog is expected to be released by Sunday March 13, 2022
