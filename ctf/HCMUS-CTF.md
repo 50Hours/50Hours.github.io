@@ -3,13 +3,12 @@ I was invited to make some Crypto challenges for HCMUS-CTF 2022 with some friend
 Next I would like to share some challenges that I have made and a short write up for them, and perhaps for challenges that I know how to solve (solution for challenge made by **vuonghy2442** might be available soon, after I know how to do it. Or I asked the author about that :(( )
 
 ## Table of contents:
-|Challenge  |Tag| Score |
-|:-------:  |:------:| :----------:|
+|Challenge|Tag|Score|
+|:-------:|:------:|:----------:|
 |Substitution|Substitution, Frequency analysis|100|
 |OH SEED|MT, PRNG|200|
 |FactorMe|Math, Totient Function|200|
 |SignMe|DSA|500|
-
 
 
 # Qualification Round
