@@ -1,1 +1,5 @@
-Blog is under development. The first blog is expected to be released by Sunday March 13, 2022
+The blog could be about anything that is interesting to myself that I want to share. The topic could range from personal life to technical topics: from cryptography to ML research trend that I want to try out for my thesis.
+
+| Title                         | Tag           |
+| -----------                   | -----------   |
+| [HCMUS-CTF](ctf/HCMUS-CTF.md) | *ctf, crypto* |
