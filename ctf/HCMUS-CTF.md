@@ -72,7 +72,7 @@ print(r.recvline().decode())
 ## FactorMe (200pt)
 **Author: me**
 
-**NOTE**: This is a very sad challenge. The idea is quite interesting to me, but the setup for the challenge is so bad that some teams could solve it easily with unintended solution. :((
+**NOTE**: This is a very sad challenge. The idea is quite interesting to me, but the setup for the challenge is so bad that there are some unintended solutions.
 
 The challenge requires you to count the number of factors a number **n** given its [Euler's totient function](https://en.wikipedia.org/wiki/Euler%27s_totient_function). Take a closer look at how **n** is generated.
 
@@ -136,6 +136,8 @@ So the solution is to find the value of secret **self.x** by using the same nonc
 
 Fortunately, base64 encoding is not bijective. So crafting $m_1$ and $m_2$ is not so difficult.
 
+The reason why the len of the message must be less than N is you can use 2 strings with the same N-prefix to create the same k, e.g **abcdef** and **abcde** in case N = 5.
+
 **Pitfall:** My linear equation lacks of a final random term. So if the message is 0 then k is 1. Many team exploit this to solve the challenge. Sadly :(
 
 ## Final
@@ -149,6 +151,79 @@ During the preparation for the contest, each challenge was given a score based o
 |RecoverMe|200|ARC4, Key recovery|
 |CommonModulus|200|Common Modulus, RSA|
 |Mixing Matrix v1|500|Linear Algebra|
-|Mixing Matrix v2|500|Linear Algebra, Latice Reduction|
+|Mixing Matrix v2|500|Linear Algebra, Lattice Reduction|
 
-The writeup will be posted soon.
+## RSABackdoor
+**Author: me**
+This challenge is an interesting challenge that I accidentally come up with while running out of ideas for crypto problems. To solve this one, you need to forget everything you've learnt about cryptography and RSA. XD
+
+The prime generation for the challenge is special. Generate a 512-bit prime p, and check whether that representation in base 13 is also a prime. If it is the case, then the 2 primes are chosen to be private key.
+
+``` python
+while True:
+    p = getPrime(512)
+    q = int(str(p), 13)
+    if isPrime(q):
+        n = p * q
+        print('Public key n = ', n)
+        break
+```
+
+
+Now just remove everything that related to number theory here, and think of how would you find a number $x$ such that $y = x$ in base 13, and $xy = n$ with a given $n$.
+
+The ideas is based on an observation that if $x \leq y$ in base $a$, then $x \leq y$ in base $b$ for any given $a$ and $b$. Denote $x_{13}$ as the value of $x$ in base 13. Then $x_{13}x$ is an increasing function. Therefore, to solve for x, binary search is a good choice.
+
+# RecoverMe
+**author: me**
+
+The challenge is about recovering the key in ARC4 cipher. The challenge consists of 2 rounds, and the first round is easier.
+
+
+### First round
+For the first round, take a look at how the key is form.
+
+``` python
+key = self.FLAG2[:-len(inp_key)] + inp_key
+cleartext = ARC4.new(key).decrypt(self.ct2)
+```
+
+where **self.ct2** is the ciphertext of a fixed string encrypted with ARC4 with **FLAG2** as key.
+
+Basically, if the input size increase by 1 char, it will override 1 last char of the **FLAG2**. So you could easily bruteforce the **FLAG2** char by char, until the oracle return the correct plaintext, that means you found the correct char. The same process is applied to get the full **FLAG2**
+
+```python
+def stage1():
+    flag = b''
+    for _ in range(19):
+        for ch in range(32, 128):
+            c.sendlineafter(':', '1')
+            c.sendlineafter(':', (chr(ch).encode() + flag).hex())
+            res = c.recvline().strip().decode()
+            res = bytes.fromhex(res)
+            if res == prompt:
+                flag = chr(ch).encode() + flag
+                break
+        print("FLAG: ", flag)
+    
+    c.sendlineafter(':', '2')
+    c.sendlineafter(':', flag.hex())
+    c.interactive()
+    return flag
+```
+
+**NOTE:** Stage 1 is based on the ideas of buffer_overflow 3 challenge in picoCTF2022, where you have to find a static canary by bruteforcing byte by byte. Tbh, the ideas of buffer overflow is more natural than the ideas of this challenge.
+
+### Second round
+For the second round, the key is concatenation of the input and the flag. To recover the key of ARC4, we use the idea of Fluhrer, Mantin and Shamir attack on ARC4, see [link](https://en.wikipedia.org/wiki/Fluhrer,_Mantin_and_Shamir_attack) and [full paper](https://www.cs.cornell.edu/people/egs/615/rc4_ksaproc.pdf).
+
+The main idea of the attack is to exploit the key scheduling algorithm to leak the key via a statistical attack on the keystream.
+
+The implementation is left as an exercise for reader :V
+
+**FLAG: HCMUS-CTF{n0w_Y0U_kn0w_4774Ck_0n_4RC4}**
+
+**NOTE:** Not all flag could be recover using this method. Since it is a statistical attack, it is possible that some character of the flag may need a little guessing. However, I have chosen the flag with zero guess for this challenge. The first half of the flag is intentionally chosen for the second stage for you to verify and test your solution with the known **HCMUS-CTF{** prefix.
+
+##############################################################
+Writeup for others challenge should be available soon. 
