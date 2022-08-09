@@ -5,7 +5,7 @@ The blog could be about anything that is interesting to myself that I want to sh
 | Title                         | Tag           |
 | -----------                   | -----------   |
 | [HCMUS-CTF](ctf/HCMUS-CTF.md) | *ctf, crypto* |
-| [LCG-DH Protocol](ctf/HCMUS-CTF.md) | *corCTF2022, crypto* |
+| [LCG-DH Protocol](ctf/KeyExchangeLCG.md) | *corCTF2022, crypto* |
 
 
 # Today I learn something new
