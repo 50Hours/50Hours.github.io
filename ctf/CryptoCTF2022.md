@@ -19,6 +19,9 @@ For each folder, the solver.py file is the solver script, all of the other files
 | Infinity castle  | easy-medium  | 32     | 131    |❌   |
 | Aniely    | medium       | 76     | 66     | ✔️  | 
 | Diploma   | medium       | 68     | 71     | ✔️  | 
+| Catilever | medium       | 60     | 79     | ✔️  | 
+| DBB       | medium       | 43     | 103    | ✔️  |
+| Starter ECC | medium       | 43     | 103    | ✔️  |
 
 # Baphomet
 The scheme first encode the flag using some kind of invertible operations (base64 encoding, inverse uppercase and lowercase). Finally the flag is xored with the key derived from the flag it self. What should be notice is the length of the flag (48 characters) and the length of the key, which is $len(flag) / 8 = 6$
@@ -149,11 +152,55 @@ The challenge require calculating the multiplicative order of a matrix in GF(p)
 ## Solution
 I am not sure about the algorithm, but sagemath provide a built-in function to calculate that. The script is mostly about get the information through socket and call ```matrix.multiplicative_order()```.
 
+# Catilever
+The classic smooth prime attack on RSA and solving discrete log problem
+
+## Solution
+Notice that both p and q are smooth primes.
+
+For the **first task**, N could be factored using the Pollard p-1 method, see [here](https://en.wikipedia.org/wiki/Pollard%27s_p_%E2%88%92_1_algorithm). The ideas is to create a multiple of $(p-1)$ (since $p-1$ is product of small primes), but not a multiple of $(p-1)(q-1)$. For the lower bound and upper bound for prime factor of M. Choose lower bound at 2^10 is low enough. And the upper bound is 2^19 (since all prime factors of p-1 is 19-bit prime).
+ 
+Another notice is that since all prime factors of p-1 are unique. Then there is no need for $log_p(M)$ part.
+
+For the **second task**, it is a discrete log on smooth modulo. Since $p, q$ are known from the first task, and both are smooth prime, using the Pohlig-Hellman algorithm to solve for the discrete log problem is a efficient way. Sagemath has a built-in ```discrete_log(a,b)``` function implementing the mentioned algorithm. Maybe there will be another post on the details of each algorithm.
+
+# DBB
+## Challenge
+```python
+from Crypto.Util.number import *
+from secret import n, B, BASE_POINT, FLAG
+
+m = bytes_to_long(FLAG)
+assert m < n
+
+F = IntegerModRing(n)
+E = EllipticCurve(F, [31337, B])
+
+BASE_POINT = E(BASE_POINT)
+
+P = m * BASE_POINT
+print(f'n = {n}')
+print(f'BASE_POINT.x = {BASE_POINT.xy()[0]}')
+print(f'P = {P.xy()[0], P.xy()[1]}')
+```
+## Solution:
+The first task is to calculate B from the given point P on the curve. Then the coordinates of the base point could also be calculated easily. (Note that there are 2 possible base point)
+
+Notice that n is not a prime number, an attempt to factorize n shows that prime factors of n are smooth primes. This mean that discrete log could be calculated on each field and using the chinese remainder theorem to get the flag. 
+
+One notice is that the modulus for CRT is the order of the base point on the corresponding curve (not the order of the curve), since the base point might not be a generator of the curve.
+
+The solve script is attached [here](../challenges/2022_cryptoctf/DBB/solve.sage)
+
+# Starter ECC
+The challenge is about finding the square root of y in modulo n, where n is a composite number. The idea could be found [here](https://www.johndcook.com/blog/quadratic_congruences/)
+
+The script is attached [here]
 
 
-
-
-# To read
+# To do
 Things that I might want to read further
 - [ ] Gaussian numbers and operation on Gaussian number (how it can help solving the SOTS challenge)
 - [ ] How to find multiplicative order of a matrix in Galois field
+- [ ] Post on Pohlig Hellman algorithm for discrete log problem
+- [ ] 
