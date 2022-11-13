@@ -15,6 +15,6 @@ The blog could be about anything that is interesting to myself that I want to sh
 This is the series where I summary what I have learned in the past few days or how I approach a new/old topic
 
 | Series                        | Tag           |
-| -----------                   | -----------   |
+| :-----------:                 | :-----------:   |
 | [How to deal with boredom](blog/boredom.md)      | Misc          |
 Sorry I have not learnt anything new that worth sharing yet :(

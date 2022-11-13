@@ -136,7 +136,7 @@ def encrypt(message: bytes) -> str:
 
 ```
 
-Since the basis is shuffle for each time the password is encrypt, then I have no idea to construct the equivalent basis
+Since the basis is shuffled for each time the password is encrypted, I have no idea how to construct the equivalent basis
 
 The author also released a hint: The possibility might tell you something 
 
